@@ -1,23 +1,24 @@
 import SearchIcon from "../assets/Search.svg"
 
-const SearchBar = () => {
+const SearchBar = ({ searchTerm, setSearchTerm }) => {
     return (
-        <div className="w-full max-w-lg shadow-md rounded-lg">
-            <div className="relative flex items-center bg-white dark:bg-gray-700 rounded-lg p-4">
+        <div className="w-full shadow-md rounded-lg">
+            <div className="relative flex items-center rounded-lg p-4 bg-lightgray">
                 <img 
                     src={SearchIcon} 
-                    className="w-5 h-5 mr-4 text-gray-500 dark:text-gray-300" 
+                    className="w-5 h-5 mr-4 text-white" 
                     alt="Search Icon"
                 /> 
                 <input 
                     type="text" 
-                    className="w-full bg-transparent focus:outline-none placeholder-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                    className="w-full bg-transparent text-white focus:outline-none placeholder-white" 
                     placeholder="Search by name, region, or subregion..."
                     aria-label="Search by name, region, or subregion"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
         </div>
     )
 }
-
 export default SearchBar;
