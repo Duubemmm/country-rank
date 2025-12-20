@@ -1,5 +1,5 @@
  export default async function fetchCountriesData() {
-  const requiredFields = ['name', 'population', 'area', 'region', 'flags', 'subregion', 'independent', 'unMember'];
+  const requiredFields = ['cca2', 'name', 'population', 'area', 'region', 'flags', 'subregion', 'independent', 'unMember'];
   const fieldsQuery = requiredFields.join(',');
   const COUNTRIES_URL = `https://restcountries.com/v3.1/all?fields=${fieldsQuery}`;
   

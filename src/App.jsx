@@ -1,13 +1,17 @@
-import Home from "./pages/HomePage.jsx"
-import CountryRanking from "./pages/CountryRanking.jsx";
-
+import {  Routes, Route } from "react-router-dom";
+import Home from "./pages/HomePage.jsx";
+import CountryDetails from "./pages/CountryDetails.jsx";
 
 const App = () => {
-return (
-  <section className="h-screen bg-black relative">
-  <Home />
-  <CountryRanking className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"/>
-  </section>
-)
-}
+  return (
+      <section className="min-h-screen bg-black relative">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/country/:cca2" element={<CountryDetails />} />
+        </Routes>
+      </section>
+  );
+};
+
 export default App;
+

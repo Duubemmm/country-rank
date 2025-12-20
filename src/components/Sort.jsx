@@ -1,11 +1,19 @@
-const Sort = () => {
+const Sort = ({ setSortBy }) => {
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+  };
+
   return (
-    <div className="flex items-center gap-4">
-      <h1 className="text-gray-300 text-lg font-semibold m-0">Sort by</h1>
-      <select className="text-gray-300 bg-transparent border border-gray-300 rounded px-4 py-2 text-base cursor-pointer min-w-[200px] focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20">
-        <option className="bg-gray-800 text-gray-300">Population</option>
-        <option className="bg-gray-800 text-gray-300">Alphabetical order</option>
-        <option className="bg-gray-800 text-gray-300">Area</option>
+    <div className="flex flex-col gap-2">
+      <h2 className="text-gray-300 text-sm font-semibold">Sort by</h2>
+      <select 
+        onChange={handleSortChange}
+        className="text-gray-300 bg-gray-800 border border-gray-600 rounded px-3 py-2 text-sm cursor-pointer min-w-[200px] focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20"
+        defaultValue="population"
+      >
+        <option value="population" className="bg-gray-800 text-gray-300">Population</option>
+        <option value="name" className="bg-gray-800 text-gray-300">Name</option>
+        <option value="area" className="bg-gray-800 text-gray-300">Area</option>
       </select>
     </div>
   );
