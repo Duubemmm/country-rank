@@ -5,14 +5,13 @@ const Status = ({ setUnMember }) => {
 
   const handleStatusChange = (status) => {
     setSelectedStatus(status);
-    
-    // Pass the filter value to parent
+
     if (status === "member") {
-      setUnMember(true); // Show only UN members
+      setUnMember(true);
     } else if (status === "non-member") {
-      setUnMember(false); // Show only non-members
+      setUnMember(false);
     } else {
-      setUnMember(null); // Show all countries
+      setUnMember(null);
     }
   };
 
@@ -27,7 +26,7 @@ const Status = ({ setUnMember }) => {
             value="all"
             checked={selectedStatus === "all"}
             onChange={() => handleStatusChange("all")}
-            className="cursor-pointer accent-blue-500"
+            className="cursor-pointer accent-blue-800"
           />
           All
         </label>
@@ -38,7 +37,7 @@ const Status = ({ setUnMember }) => {
             value="member"
             checked={selectedStatus === "member"}
             onChange={() => handleStatusChange("member")}
-            className="cursor-pointer accent-blue-500"
+            className="cursor-pointer accent-blue-800"
           />
           Member of the United Nations
         </label>
@@ -49,13 +48,13 @@ const Status = ({ setUnMember }) => {
             value="non-member"
             checked={selectedStatus === "non-member"}
             onChange={() => handleStatusChange("non-member")}
-            className="cursor-pointer accent-blue-500"
+            className="cursor-pointer accent-blue-800"
           />
           Not a Member
         </label>
       </div>
     </div>
   );
-};
+}
 
 export default Status;

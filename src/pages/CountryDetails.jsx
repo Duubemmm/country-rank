@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchCountryByCode, fetchCountriesByCodes } from "../api/countrydetailsapi";
+import {fetchCountryByCode,fetchCountriesByCodes } from "../api/countrydetailsapi";
+import DetailBox from "../components/DetailBox";
 
 const CountryDetails = () => {
   const { cca2 } = useParams();
   const navigate = useNavigate();
-  
+
   const [country, setCountry] = useState(null);
   const [borderCountries, setBorderCountries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,27 +16,18 @@ const CountryDetails = () => {
     const loadCountryData = async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
-        console.log("Fetching country with code:", cca2);
-        
-        // Step 1: Fetch the main country data
         const countryData = await fetchCountryByCode(cca2);
-        console.log("Country data received:", countryData);
         setCountry(countryData);
 
-        // Step 2: Fetch border countries if they exist
         if (countryData.borders && countryData.borders.length > 0) {
-          console.log("Fetching border countries:", countryData.borders);
           const borders = await fetchCountriesByCodes(countryData.borders);
-          console.log("Border countries received:", borders);
           setBorderCountries(borders);
         } else {
-          console.log("No border countries");
           setBorderCountries([]);
         }
       } catch (err) {
-        console.error("Error loading country data:", err);
         setError(err.message);
       } finally {
         setIsLoading(false);
@@ -54,125 +46,120 @@ const CountryDetails = () => {
   if (isLoading) {
     return (
       <div className="bg-black text-white min-h-screen flex items-center justify-center">
-        <p className="text-xl">Loading country details...</p>
+        <p className="text-xl animate-pulse">Loading country details...</p>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !country) {
     return (
-      <div className="bg-black text-white min-h-screen flex items-center justify-center flex-col gap-4">
-        <p className="text-xl text-red-500">Error: {error}</p>
-        <button 
-          onClick={() => navigate('/countries')}
-          className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
+      <div className="bg-black text-white min-h-screen flex items-center justify-center flex-col gap-4 p-6 text-center">
+        <p className="text-xl text-red-500">
+          {error || "No country data found"}
+        </p>
+        <button
+          onClick={() => navigate("/")}
+          className="px-6 py-2 bg-zinc-800 rounded-lg hover:bg-zinc-700"
         >
-          Back to Countries
+          Back to Home
         </button>
-      </div>
-    );
-  }
-
-  if (!country) {
-    return (
-      <div className="bg-black text-white min-h-screen flex items-center justify-center">
-        <p className="text-xl">No country data found</p>
       </div>
     );
   }
 
   return (
-    <section className="bg-black text-white min-h-screen p-8">
+    <section className="bg-black text-white min-h-screen p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Back Button */}
-        <button 
+        <button
           onClick={() => navigate(-1)}
-          className="mb-6 px-4 py-2 bg-gray-800 rounded hover:bg-gray-700 transition-colors"
+          className="mb-6 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg hover:bg-zinc-800 transition-colors flex items-center gap-2"
         >
-          ← Back
+          <span>←</span> Back
         </button>
 
-        {/* Country Header */}
-        <div className="flex flex-col md:flex-row gap-8 mb-8">
-          <img
-            src={country.flags.svg || country.flags.png}
-            alt={`${country.name.common} flag`}
-            className="w-full md:w-96 h-64 object-cover rounded-lg shadow-lg"
-          />
-          
+        {/* Main Section: Column on mobile, Row on md+ */}
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mb-12">
+          {/* Flag Container */}
+          <div className="w-full lg:w-1/2">
+            <img
+              src={country.flags.svg || country.flags.png}
+              alt={`${country.name.common} flag`}
+              className="w-full h-auto max-h-64 sm:max-h-96 object-cover rounded-xl shadow-2xl border border-zinc-800"
+            />
+          </div>
+
+          {/* Info Container */}
           <div className="flex-1">
-            <h1 className="text-4xl font-bold mb-2">{country.name.common}</h1>
-            <p className="text-xl text-gray-400 mb-6">{country.name.official}</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-gray-400">Capital</p>
-                <p className="text-lg">{country.capital?.[0] || 'N/A'}</p>
-              </div>
-              
-              <div>
-                <p className="text-gray-400">Population</p>
-                <p className="text-lg">{country.population.toLocaleString()}</p>
-              </div>
-              
-              <div>
-                <p className="text-gray-400">Region</p>
-                <p className="text-lg">{country.region}</p>
-              </div>
-              
-              <div>
-                <p className="text-gray-400">Subregion</p>
-                <p className="text-lg">{country.subregion || 'N/A'}</p>
-              </div>
-              
-              <div>
-                <p className="text-gray-400">Area</p>
-                <p className="text-lg">{country.area.toLocaleString()} km²</p>
-              </div>
-              
-              <div>
-                <p className="text-gray-400">Languages</p>
-                <p className="text-lg">
-                  {country.languages 
-                    ? Object.values(country.languages).join(', ')
-                    : 'N/A'}
-                </p>
-              </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2">
+              {country.name.common}
+            </h1>
+            <p className="text-lg text-zinc-500 mb-8">
+              {country.name.official}
+            </p>
+
+            {/* Details Grid: Stacks on small, 2 cols on md */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+              <DetailBox label="Capital" value={country.capital?.[0]} />
+              <DetailBox
+                label="Population"
+                value={country.population.toLocaleString()}
+              />
+              <DetailBox label="Region" value={country.region} />
+              <DetailBox label="Subregion" value={country.subregion} />
+              <DetailBox
+                label="Area"
+                value={`${country.area.toLocaleString()} km²`}
+              />
+              <DetailBox
+                label="Languages"
+                value={
+                  country.languages
+                    ? Object.values(country.languages).join(", ")
+                    : "N/A"
+                }
+              />
             </div>
           </div>
         </div>
 
-        {/* Neighboring Countries Section */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">
+        {/* Neighbors Section */}
+        <div className="mt-12 pt-8 border-t border-zinc-900">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
             Neighboring Countries
             {borderCountries.length > 0 && (
-              <span className="text-gray-400 text-lg ml-2">
+              <span className="text-zinc-600 text-lg font-normal">
                 ({borderCountries.length})
               </span>
             )}
           </h2>
-          
+
           {borderCountries.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {borderCountries.map((border) => (
                 <button
                   key={border.cca3}
                   onClick={() => handleBorderClick(border.cca3)}
-                  className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors text-left"
+                  className="group bg-zinc-900/50 border border-zinc-800 p-3 rounded-xl hover:bg-zinc-800 transition-all text-left"
                 >
                   <img
                     src={border.flags.png}
-                    alt={`${border.name.common} flag`}
-                    className="w-full h-20 object-cover rounded mb-2"
+                    alt={border.name.common}
+                    className="w-full h-24 object-cover rounded-lg mb-3 group-hover:opacity-80 transition-opacity"
                   />
-                  <p className="font-semibold">{border.name.common}</p>
-                  <p className="text-sm text-gray-400">{border.cca3}</p>
+                  <p className="font-semibold text-sm sm:text-base truncate">
+                    {border.name.common}
+                  </p>
+                  <p className="text-xs text-zinc-500 uppercase tracking-widest">
+                    {border.cca3}
+                  </p>
                 </button>
               ))}
             </div>
           ) : (
-            <p className="text-gray-400">This country has no land borders.</p>
+            <p className="text-zinc-500 italic py-4 bg-zinc-900/30 rounded-lg text-center">
+              This country has no land borders.
+            </p>
           )}
         </div>
       </div>
